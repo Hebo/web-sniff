@@ -1,13 +1,14 @@
 from scapy.all import sr1,IP, ICMP, sniff
 import urllib
 import re
-import collections
+import collections # deque
 
 # BPF filter to capture all IPv4 HTTP packets to and from port 80, 
 # i.e. print only packets that contain data, not, for example, SYN and FIN
 # packets and ACK-only packets
 BPF_FILTER = "tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0)"
 
+# Pattern to parse out http headers from raw request
 re_headers = re.compile(r'(?P<name>.*?): (?P<value>.*?)\r\n')
 
 # store recent queries in double ended queue to avoid lots of duplication
@@ -32,6 +33,8 @@ class GoogleHandler(Handler):
     
     @classmethod
     def test(cls, p):
+        if headers['Host'].find("google.com") == -1:
+            return False
         return True
     @classmethod
     def parse(cls, p):
