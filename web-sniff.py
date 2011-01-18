@@ -14,16 +14,22 @@ re_headers = re.compile(r'(?P<name>.*?): (?P<value>.*?)\r\n')
 # store recent queries in double ended queue to avoid lots of duplication
 recents = collections.deque(maxlen=20)
 
+handlers = []
+
 class Handler(object):
     """default handler to merely parse out the host"""
     @classmethod
-    def test(cls, p):
+    def test(cls, headers, p):
         """test if the packet content can be parsed by this handler"""
-        pass
+        return True
+        
     @classmethod
-    def parse(cls, p):
+    def parse(cls, headers, p):
         """parse the packet and return a formatted string containing useful info"""
-        pass
+        statement =  "{0} - ".format(p.payload.src)
+        statement += "\"{0}\"".format(headers['Host'])
+        
+        return statement
  
         
 class GoogleHandler(Handler):
@@ -32,12 +38,13 @@ class GoogleHandler(Handler):
     re_google = re.compile(r'^GET /search\?\S*[\?&]q=([^&]+).*(?:&q=([^&]+))?.* HTTP/1.1')
     
     @classmethod
-    def test(cls, p):
+    def test(cls, headers, p):
         if headers['Host'].find("google.com") == -1:
             return False
         return True
+        
     @classmethod
-    def parse(cls, p):
+    def parse(cls, headers, p):
         # get search query
         match = cls.re_google.match(p.load)
         if not match:
@@ -45,7 +52,7 @@ class GoogleHandler(Handler):
         query = urllib.unquote_plus(match.group(1))
         
         # craft statement to print
-        statement =  "{0} > ".format(p.payload.src)
+        statement =  "{0} - ".format(p.payload.src)
         statement += "Google: \"{0}\"".format(query)
         
         return statement
@@ -57,27 +64,31 @@ def parse_packet(pkt):
     headers = dict(re_headers.findall(pkt.load))
     if not headers.has_key("Host"):
         return
-    
-    # only google supported for now
-    if headers['Host'].find("google.com") == -1:
-        return
-    
-    #todo: rewrite logic
-    statement = GoogleHandler.parse(pkt)
-    if statement:
-        if statement in recents:
-            # allow it to repeat eventually when it is pushed out of the deque
-            recents.append(None) # filler
+          
+          
+    def output_statement(msg):
+        """check the recents queue and print if possible"""
+        if msg:
+            if msg in recents:
+                # allow it to repeat eventually when it is pushed out of the deque
+                #recents.append(None) # filler
+                return
+            else:
+                recents.append(msg)    
+            print msg
+
+    for h in handlers:
+        if h.test(headers, pkt):
+            output_statement(h.parse(headers, pkt))
             return
-        else:
-            recents.append(statement)
-        
-        print statement
     
+    # default handler
+    if Handler.test(headers, pkt):
+        output_statement(Handler.parse(headers, pkt))
+            
 
 if __name__ == "__main__":
-    handlers = []
-    handlers.append(GoogleHandler())
+    handlers.append(GoogleHandler)
     
     # sniff until interrupted
     results = sniff(filter=BPF_FILTER, prn=parse_packet)
