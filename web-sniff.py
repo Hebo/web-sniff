@@ -11,13 +11,26 @@ BPF_FILTER = "tcp port 80 and (((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>
 # Pattern to parse out http headers from raw request
 re_headers = re.compile(r'(?P<name>.*?): (?P<value>.*?)\r\n')
 
-# store recent queries in double ended queue to avoid lots of duplication
-recents = collections.deque(maxlen=20)
-
 handlers = []
 
+# store recent queries in double ended queue to avoid lots of duplication
+recents = collections.deque(maxlen=20)
+def check_recent(key):
+    """check the recents queue for key and return if located"""
+    if key:
+        if key in recents:
+            # allow it to repeat eventually when it is pushed out of the deque
+            #recents.append(None) # filler
+            return True
+        else:
+            recents.append(key)    
+            return False
+        
+        
 class Handler(object):
-    """default handler to merely parse out the host"""
+    """default handler to merely parse out the url"""
+    re_url = re.compile(r'^GET (/.*) HTTP/1.1')
+    
     @classmethod
     def test(cls, headers, p):
         """test if the packet content can be parsed by this handler"""
@@ -26,10 +39,19 @@ class Handler(object):
     @classmethod
     def parse(cls, headers, p):
         """parse the packet and return a formatted string containing useful info"""
-        statement =  "{0} - ".format(p.payload.src)
-        statement += "\"{0}\"".format(headers['Host'])
         
-        return statement
+        if check_recent(headers['Host']):
+            return
+        
+        # extract url from GET request
+        match = cls.re_url.match(p.load)
+        if not match:
+            return
+            
+        statement =  "{0} - \"{1}{2}\"".format(p.payload.src, headers['Host'],
+                                                match.group(1)[:120])
+        print statement
+        return
  
         
 class GoogleHandler(Handler):
@@ -51,11 +73,15 @@ class GoogleHandler(Handler):
             return
         query = urllib.unquote_plus(match.group(1))
         
+        if check_recent(query):
+            return
+        
         # craft statement to print
         statement =  "{0} - ".format(p.payload.src)
         statement += "Google: \"{0}\"".format(query)
         
-        return statement
+        print statement
+        return
 
 
 def parse_packet(pkt):
@@ -65,26 +91,19 @@ def parse_packet(pkt):
     if not headers.has_key("Host"):
         return
           
-          
-    def output_statement(msg):
-        """check the recents queue and print if possible"""
-        if msg:
-            if msg in recents:
-                # allow it to repeat eventually when it is pushed out of the deque
-                #recents.append(None) # filler
-                return
-            else:
-                recents.append(msg)    
-            print msg
 
     for h in handlers:
         if h.test(headers, pkt):
-            output_statement(h.parse(headers, pkt))
+            msg = h.parse(headers, pkt)
+            if msg:
+                print msg
             return
     
     # default handler
     if Handler.test(headers, pkt):
-        output_statement(Handler.parse(headers, pkt))
+        msg = Handler.parse(headers, pkt)
+        if msg:
+            print msg
             
 
 if __name__ == "__main__":
