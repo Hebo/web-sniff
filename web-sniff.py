@@ -2,6 +2,10 @@ from scapy.all import sr1,IP, ICMP, sniff
 import urllib
 import re
 import collections # deque
+import json
+import time
+import redis
+
 
 # BPF filter to capture all IPv4 HTTP packets to and from port 80, 
 # i.e. print only packets that contain data, not, for example, SYN and FIN
@@ -25,90 +29,41 @@ def check_recent(key):
         else:
             recents.append(key)    
             return False
-        
-        
-class Handler(object):
-    """default handler to merely parse out the url"""
+
+
+class UrlHandler(object):
+    """merely parse out the url"""
     re_url = re.compile(r'^GET (/.*) HTTP/1.1')
     
-    @classmethod
-    def test(cls, headers, p):
-        """test if the packet content can be parsed by this handler"""
-        return True
+    def __init__(self):
+        self.redis_server = redis.Redis("localhost")
         
-    @classmethod
-    def parse(cls, headers, p):
-        """parse the packet and return a formatted string containing useful info"""
+    def parse(self, pkt):
+        """parse the packet and push the data to redis"""
+        
+        # parse out http headers 
+        # pkt.load contains raw http request
+        headers = dict(re_headers.findall(pkt.load))
+        if not headers.has_key("Host"):
+            return
         
         if check_recent(headers['Host']):
             return
         
         # extract url from GET request
-        match = cls.re_url.match(p.load)
+        match = self.re_url.match(pkt.load)
         if not match:
             return
-            
-        statement =  "{0} - \"{1}{2}\"".format(p.payload.src, headers['Host'],
-                                                match.group(1)[:120])
-        print statement
-        return
- 
         
-class GoogleHandler(Handler):
-    # Since google stores multiple searches in the url, we first try to locate
-    # the most recent one, if it exists
-    re_google = re.compile(r'^GET /search\?\S*[\?&]q=([^&]+).*(?:&q=([^&]+))?.* HTTP/1.1')
-    
-    @classmethod
-    def test(cls, headers, p):
-        if headers['Host'].find("google.com") == -1:
-            return False
-        return True
+        request = {'time': time.strftime("%H:%M"), 'ip': pkt.payload.src, 
+                    'host': headers['Host'], 'url': match.group(1)}
+        self.redis_server.publish("requests", json.dumps(request))
         
-    @classmethod
-    def parse(cls, headers, p):
-        # get search query
-        match = cls.re_google.match(p.load)
-        if not match:
-            return
-        query = urllib.unquote_plus(match.group(1))
-        
-        if check_recent(query):
-            return
-        
-        # craft statement to print
-        statement =  "{0} - ".format(p.payload.src)
-        statement += "Google: \"{0}\"".format(query)
-        
-        print statement
         return
 
 
-def parse_packet(pkt):
-    # parse out http headers 
-    # pkt.load contains raw http request
-    headers = dict(re_headers.findall(pkt.load))
-    if not headers.has_key("Host"):
-        return
-          
-
-    for h in handlers:
-        if h.test(headers, pkt):
-            msg = h.parse(headers, pkt)
-            if msg:
-                print msg
-            return
-    
-    # default handler
-    if Handler.test(headers, pkt):
-        msg = Handler.parse(headers, pkt)
-        if msg:
-            print msg
-            
-
-if __name__ == "__main__":
-    handlers.append(GoogleHandler)
-    
+if __name__ == "__main__":    
     # sniff until interrupted
-    results = sniff(filter=BPF_FILTER, prn=parse_packet)
+    handler = UrlHandler()
+    results = sniff(filter=BPF_FILTER, prn=handler.parse)
     print repr(results)
