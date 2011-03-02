@@ -13,7 +13,7 @@ socket.on('message', function(message){
   ]);
   
 }); 
-socket.on('disconnect', function(){ });
+socket.on('disconnect', function(){ $('#connect-status').text("Disconnected") });
 
 $(document).ready( function() {
   $('table').dataTable({
