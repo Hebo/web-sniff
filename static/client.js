@@ -23,8 +23,6 @@ socket.on('disconnect', function(){
 
 $(document).ready( function() {
   $('table').dataTable({
-    "bJQueryUI": true,
-    "bPaginate": false,
     "bAutoWidth": false
     });
 });

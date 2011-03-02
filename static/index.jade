@@ -3,7 +3,7 @@ html(lang="en")
   head
     title WebSniff
     link(rel: "stylesheet", href: "index.css", type: "text/css")
-    link(rel: "stylesheet", href: "jquery-ui-1.8.10.custom.css", type: "text/css")
+    link(rel: "stylesheet", href: "table.css", type: "text/css")
     script(type: "text/javascript", src: "jquery-1.5.1.min.js")
     script(type: "text/javascript", src: "jquery.dataTables.min.js")   
     script(src: "http://localhost:8000/socket.io/socket.io.js")
@@ -14,9 +14,15 @@ html(lang="en")
       div(id: "head") WebSniff
       div(id: "subtitle") Real-time Request Viewer
       span(id: "connect-status", class: "disconnected") Connecting...
-    #traffic
-      table
+    #dtable
+      table(cellpadding: "0", cellspacing: "0", border: "0", class: "display", id: "traffic")
         thead
+          th Time
+          th IP
+          th Host
+          th URL
+          th Browser
+        tfoot
           th Time
           th IP
           th Host

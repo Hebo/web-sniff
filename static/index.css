@@ -27,8 +27,9 @@ h1 {
   color: red;
 }
 
-#traffic {
+#dtable {
   margin-left: 48px;
+  width: 70%;
 }
 
 body {
@@ -39,6 +40,3 @@ body {
   margin: 10px;
 }
 
-#traffic {
-  width: 70%;
-}
