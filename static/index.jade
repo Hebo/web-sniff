@@ -1,0 +1,23 @@
+!!! 5
+html(lang="en")
+  head
+    title WebSniff
+    link(rel: "stylesheet", href: "index.css", type: "text/css")
+    link(rel: "stylesheet", href: "jquery-ui-1.8.10.custom.css", type: "text/css")
+    script(type: "text/javascript", src: "jquery-1.5.1.min.js")
+    script(type: "text/javascript", src: "jquery.dataTables.min.js")   
+    script(src: "http://localhost:8000/socket.io/socket.io.js")
+    script(type: "text/javascript", src: "client.js")
+    
+  body
+    div(id: "header")
+      div(id: "head") WebSniff - Realtime HTTP Requests
+      span(id: "connect-status") Connecting...
+    #traffic
+      table
+        thead
+          th Time
+          th IP
+          th Host
+          th URL
+          th Browser

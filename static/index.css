@@ -1,0 +1,35 @@
+h1 {
+  margin-bottom: 0px;
+}
+
+#header {
+  color: #FFF;
+  margin-left: 58px;
+  margin-bottom: 2em;
+  width: 60%;
+  font-family: serif;
+  text-align: right;
+}
+
+#head {
+  font: 2em serif;
+}
+
+#connect-status {
+  margin-top: 0px;
+}
+
+#traffic {
+  margin-left: 48px;
+}
+
+body {
+  background-color: #2F2C2B;
+  font-family: "Lucida Grande", Helvetica, sans-serif;
+  margin: 10px;
+  color: #FFF;
+}
+
+#traffic {
+  width: 70%;
+}

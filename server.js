@@ -12,7 +12,7 @@ server = http.createServer(function(req, res){
   
   if (uri == '/') {
     res.writeHead(200, {'Content-Type': 'text/html'}); 
-    jade.renderFile("index.jade", {}, function(err, html){
+    jade.renderFile("static/index.jade", {}, function(err, html){
       if (err) { sys.puts(err); }
       res.write(html);
       res.end();
@@ -26,7 +26,7 @@ server = http.createServer(function(req, res){
         res.write(err + "\n");  
         res.end();  
         return;  
-      }  
+      }
       res.writeHead(200);  
       res.write(file, "binary");  
       res.end();
@@ -39,10 +39,18 @@ server.listen(8000);
 // socket.io 
 var socket = io.listen(server); 
 socket.on('connection', function(client){ 
-  // new client is here! 
-  sys.puts("client here")
-  client.send("Your number is " + client.sessionId)
   
-  client.on('message', function(){ sys.puts("message") }) 
-  client.on('disconnect', function(){ sys.puts("dced") }) 
+  setInterval(function(){
+    msg = JSON.stringify({
+      "time": "12:01",
+      "ip": "127.0.0.1",
+      "host": "google.com",
+      "uri": "/search?q=cats",
+      "browser": "N/A"
+    });
+    client.send(msg);
+  }, 10000);
+  
+  client.on('message', function(){ sys.puts("message") });
+  client.on('disconnect', function(){ sys.puts("dced") });
 });
