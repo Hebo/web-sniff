@@ -1,6 +1,9 @@
 var socket = new io.Socket('localhost', { port: 8000 }); 
 socket.connect();
-socket.on('connect', function(){ $('#connect-status').text("Connection Active") }); 
+socket.on('connect', function(){ 
+  $('#connect-status').text("Connected")
+    .removeClass("unconnected").addClass("connected"); 
+}); 
 socket.on('message', function(message){
   
   data = JSON.parse(message)
@@ -13,7 +16,10 @@ socket.on('message', function(message){
   ]);
   
 }); 
-socket.on('disconnect', function(){ $('#connect-status').text("Disconnected") });
+socket.on('disconnect', function(){ 
+  $('#connect-status').text("Disconnected")
+    .removeClass("connected").addClass("unconnected");
+});
 
 $(document).ready( function() {
   $('table').dataTable({

@@ -11,8 +11,9 @@ html(lang="en")
     
   body
     div(id: "header")
-      div(id: "head") WebSniff - Realtime HTTP Requests
-      span(id: "connect-status") Connecting...
+      div(id: "head") WebSniff
+      div(id: "subtitle") Real-time Request Viewer
+      span(id: "connect-status", class: "disconnected") Connecting...
     #traffic
       table
         thead

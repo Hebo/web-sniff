@@ -3,20 +3,28 @@ h1 {
 }
 
 #header {
-  color: #FFF;
+  color: #000;
   margin-left: 58px;
   margin-bottom: 2em;
-  width: 60%;
+  width: 30%;
   font-family: serif;
   text-align: right;
 }
 
 #head {
-  font: 2em serif;
+  font: 3em serif;
 }
 
 #connect-status {
   margin-top: 0px;
+}
+
+.connected {
+  color: green;
+}
+
+.unconnected {
+  color: red;
 }
 
 #traffic {
@@ -24,10 +32,11 @@ h1 {
 }
 
 body {
-  background-color: #2F2C2B;
+  background-repeat: no-repeat;
+  background-image: -moz-linear-gradient(100% 100% 90deg, #ccc, #fff);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#fff));
   font-family: "Lucida Grande", Helvetica, sans-serif;
   margin: 10px;
-  color: #FFF;
 }
 
 #traffic {

@@ -51,6 +51,6 @@ socket.on('connection', function(client){
     client.send(msg);
   }, 10000);
   
-  client.on('message', function(){ sys.puts("message") });
-  client.on('disconnect', function(){ sys.puts("dced") });
+  client.on('message', function(){ sys.puts("message recieved") });
+  client.on('disconnect', function(){ });
 });
