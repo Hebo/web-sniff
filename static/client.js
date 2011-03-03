@@ -17,7 +17,10 @@ socket.on('disconnect', function(){
 
 $(document).ready( function() {
   $('table').dataTable({
-    "bAutoWidth": false
+	"aaSorting": [[ 0, "desc" ]],
+	"sPaginationType": "full_numbers",
+    "bAutoWidth": false,
+	"iDisplayLength": 50
     });
 });
 

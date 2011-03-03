@@ -37,6 +37,7 @@ server = http.createServer(function(req, res){
 });
      
 server.listen(8000);
+sys.puts("Server running on localhost:8000")
 
 // socket.io 
 var socket = io.listen(server); 
@@ -52,8 +53,12 @@ var tcp_tracker = new pcap.TCP_tracker(),
 	pcap_session = pcap.createSession("en1", FILTER);
 
 tcp_tracker.on('http request', function(session, http){
+	var pad = function pad(n) { return (n < 10 ? '0' : '') + n};
+	var now = new Date();
+	timeString = pad(now.getHours()) + ":" + pad(now.getMinutes());	
+	
 	msg = JSON.stringify({
-      "time": "12:01",
+      "time": timeString,
       "ip": session.src,
       "host": http.request.headers['Host'],
       "uri": http.request.url,
@@ -66,6 +71,3 @@ pcap_session.on('packet', function(raw_packet){
     var packet = pcap.decode.packet(raw_packet);
     tcp_tracker.track_packet(packet);
 });
-
-
-sys.puts("aloha")
