@@ -4,18 +4,12 @@ socket.on('connect', function(){
   $('#connect-status').text("Connected")
     .removeClass("unconnected").addClass("connected"); 
 }); 
-socket.on('message', function(message){
-  
-  data = JSON.parse(message)
-  $('table').dataTable().fnAddData([
-    data.time,
-    data.ip,
-    data.host,
-    data.uri,
-    data.browser 
-  ]);
-  
+
+socket.on('message', function(message){  
+  var data = JSON.parse(message);
+  add_row(data);
 }); 
+
 socket.on('disconnect', function(){ 
   $('#connect-status').text("Disconnected")
     .removeClass("connected").addClass("unconnected");
@@ -26,3 +20,13 @@ $(document).ready( function() {
     "bAutoWidth": false
     });
 });
+
+function add_row (data) {
+	$('table').dataTable().fnAddData([
+    data.time,
+    data.ip,
+    data.host,
+    data.uri.slice(0, 30),
+    data.browser 
+  ]);
+}

@@ -8,27 +8,6 @@ Icon?
 .Spotlight-V100
 .Trashes
 
-### Python ###
-*.py[co]
-
-# Packages
-*.egg
-*.egg-info
-dist
-build
-eggs
-parts
-bin
-develop-eggs
-.installed.cfg
-
-# Installer logs
-pip-log.txt
-
-# Unit test / coverage reports
-.coverage
-.tox
-
 ### Node ###
 lib-cov
 *.seed

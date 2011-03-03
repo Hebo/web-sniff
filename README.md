@@ -7,11 +7,14 @@ Installing
 ### OSX ###
 
 Install mxcl's [homebrew](http://mxcl.github.com/homebrew/), then run
-    brew install python node redis
-    easy_install redis
+    brew install node
 
-Install [scapy](http://www.secdev.org/projects/scapy/doc/installation.html#installing-scapy-v2-x) manually
-
-Get npm and the necessary node packages with
+Get [npm](http://npmjs.org/) and the necessary node packages with
     curl http://npmjs.org/install.sh | sh
-    npm install express socket.io jade
+    npm install express socket.io jade pcap
+
+Usage
+-----
+
+To run (sudo is necessary to set adapter to promiscuous mode)
+    sudo -E node server.js
