@@ -23,8 +23,19 @@ $(document).ready( function() {
     "iDisplayLength": 50,
     "oLanguage": {
       "sEmptyTable": "No requests yet",
-      "sSearch": "Filter:"
-    }
+      "sSearch": "Filter:"  
+    },
+    "aoColumnDefs": [ 
+		  {
+			  "fnRender": function ( oObj ) {
+          var short_uri = oObj.aData[3].slice(0, 30)
+          
+				  return "<a target=\"_blank\" href=\"http://" + oObj.aData[2] + oObj.aData[3] + 
+				          "\">"+ short_uri +"</a>";
+				},
+				"aTargets": [3]	
+			},
+		]
   });
 });
 
