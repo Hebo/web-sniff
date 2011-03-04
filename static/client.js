@@ -17,11 +17,15 @@ socket.on('disconnect', function(){
 
 $(document).ready( function() {
   $('table').dataTable({
-	"aaSorting": [[ 0, "desc" ]],
-	"sPaginationType": "full_numbers",
+    "aaSorting": [[ 0, "desc" ]],
+    "sPaginationType": "full_numbers",
     "bAutoWidth": false,
-	"iDisplayLength": 50
-    });
+    "iDisplayLength": 50,
+    "oLanguage": {
+      "sEmptyTable": "No requests yet",
+      "sSearch": "Filter:"
+    }
+  });
 });
 
 function add_row (data) {

@@ -1,18 +1,20 @@
-h1 {
-  margin-bottom: 0px;
-}
-
 #header {
-  color: #000;
-  margin-left: 58px;
-  margin-bottom: 2em;
-  width: 30%;
-  font-family: serif;
-  text-align: right;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 #head {
-  font: 3em serif;
+  display: block; text-decoration: none;
+  font: 6em Helvetica, Arial, Sans-Serif; letter-spacing: -5px;  
+  text-align: center;
+  color: #999; text-shadow: 0px 3px 8px #2a2a2a;
+}
+
+#header > p {
+  font: 1.5em Tahoma, Helvetica, Arial, Sans-Serif;
+  text-align: center;
+  text-shadow: 0px 2px 3px #555;
+  margin-top: 0px;
 }
 
 #connect-status {
@@ -28,15 +30,16 @@ h1 {
 }
 
 #dtable {
-  margin-left: 48px;
-  width: 70%;
+  width: 90%; margin: 0 auto; background: #bdbdbd; padding: 20px;
+    
+  -webkit-box-shadow: 0px 2px 3px #555;
+  -moz-box-shadow: 0px 2px 3px #555;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
 }
 
 body {
-  background-repeat: no-repeat;
-  background-image: -moz-linear-gradient(100% 100% 90deg, #ccc, #fff);
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#ccc), to(#fff));
-  font-family: "Lucida Grande", Helvetica, sans-serif;
-  margin: 10px;
+  background: #474747 url(images/bg.png);
+  margin: 40px;
 }
 

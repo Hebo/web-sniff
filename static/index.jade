@@ -12,20 +12,19 @@ html(lang="en")
   body
     div(id: "header")
       div(id: "head") WebSniff
-      div(id: "subtitle") real-time request viewer
-	    | Status:
-      span(id: "connect-status", class: "disconnected") Connecting...
+      p Status: 
+        span(id: "connect-status", class: "unconnected") Connecting...
     #dtable
       table(cellpadding: "0", cellspacing: "0", border: "0", class: "display", id: "traffic")
         thead
           th Time
           th IP
           th Host
-          th URL
+          th URI
           th Browser
         tfoot
           th Time
           th IP
           th Host
-          th URL
+          th URI
           th Browser
