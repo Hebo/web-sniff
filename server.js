@@ -55,7 +55,8 @@ var tcp_tracker = new pcap.TCP_tracker(),
 tcp_tracker.on('http request', function(session, http){
 	var pad = function pad(n) { return (n < 10 ? '0' : '') + n};
 	var now = new Date();
-	timeString = pad(now.getHours()) + ":" + pad(now.getMinutes());	
+	timeString = pad(now.getHours()) + ":" + pad(now.getMinutes()) +
+	                                   ":" + pad(now.getSeconds());	
 	
 	msg = JSON.stringify({
       "time": timeString,
