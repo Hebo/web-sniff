@@ -60,7 +60,7 @@ tcp_tracker.on('http request', function(session, http){
 	
 	msg = JSON.stringify({
       "time": timeString,
-      "ip": session.src,
+      "ip": session.src.match(/(\d+\.){3}\d+/)[0],
       "host": http.request.headers['Host'],
       "uri": http.request.url,
       "browser": "N/A"
