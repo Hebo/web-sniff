@@ -9,8 +9,7 @@ Installing
 
 ### OSX ###
 
-Install mxcl's [homebrew](http://mxcl.github.com/homebrew/), then run
-    brew install node
+Install mxcl's [homebrew](http://mxcl.github.com/homebrew/), then run `brew install node`
 
 Get [npm](http://npmjs.org/) and the necessary node packages with
     curl http://npmjs.org/install.sh | sh
